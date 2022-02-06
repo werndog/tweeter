@@ -11,6 +11,8 @@ import edu.byu.cs.tweeter.client.cache.Cache;
 import edu.byu.cs.tweeter.client.model.service.FollowService;
 import edu.byu.cs.tweeter.client.model.service.StatusService;
 import edu.byu.cs.tweeter.client.model.service.UserService;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.SimpleNotificationObserver;
+import edu.byu.cs.tweeter.client.model.service.backgroundTask.observer.SingleItemObserver;
 import edu.byu.cs.tweeter.model.domain.Status;
 import edu.byu.cs.tweeter.model.domain.User;
 
@@ -140,7 +142,7 @@ public class MainPresenter {
 
 
 
-    public class PostStatusObserver implements StatusService.PostStatusObserver {
+    public class PostStatusObserver implements SimpleNotificationObserver {
 
         @Override
         public void handleSuccess() {
@@ -158,7 +160,7 @@ public class MainPresenter {
         }
     }
 
-    public class UnfollowObserver implements FollowService.UnfollowObserver {
+    public class UnfollowObserver implements SimpleNotificationObserver {
 
         @Override
         public void handleSuccess() {
@@ -180,10 +182,10 @@ public class MainPresenter {
         }
     }
 
-    public class GetFollowersCountObserver implements FollowService.GetFollowersCountObserver {
+    public class GetFollowersCountObserver implements SingleItemObserver<Integer> {
 
         @Override
-        public void handleSuccess(int count) {
+        public void handleSuccess(Integer count) {
             view.setFollowerCount(count);
         }
 
@@ -196,12 +198,14 @@ public class MainPresenter {
         public void handleException(Exception exception) {
             view.displayErrorMessage("Failed to get followers count because of exception: " + exception.getMessage());
         }
+
+
     }
 
-    public class GetFollowingCountObserver implements FollowService.GetFollowingCountObserver {
+    public class GetFollowingCountObserver implements SingleItemObserver<Integer> {
 
         @Override
-        public void handleSuccess(int count) {
+        public void handleSuccess(Integer count) {
             view.setFolloweeCount(count);
         }
 
@@ -216,10 +220,10 @@ public class MainPresenter {
         }
     }
 
-    public class IsFollowerObserver implements FollowService.IsFollowerObserver {
+    public class IsFollowerObserver implements SingleItemObserver<Boolean> {
 
         @Override
-        public void handleSuccess(boolean isFollower) {
+        public void handleSuccess(Boolean isFollower) {
             view.updateFollowButton(!isFollower);
         }
 
@@ -234,7 +238,7 @@ public class MainPresenter {
         }
     }
 
-    public class FollowObserver implements FollowService.FollowObserver {
+    public class FollowObserver implements SimpleNotificationObserver {
 
         @Override
         public void handleSuccess() {
@@ -256,7 +260,7 @@ public class MainPresenter {
         }
     }
 
-    public class LogoutObserver implements UserService.LogoutObserver {
+    public class LogoutObserver implements SimpleNotificationObserver {
 
         @Override
         public void handleSuccess() {
